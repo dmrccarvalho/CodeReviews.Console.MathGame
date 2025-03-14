@@ -23,7 +23,7 @@ do
     Console.WriteLine("2. See Highscores (session)");
     Console.WriteLine("0. Exit");
 
-    menuSelection = readUserInput();
+    menuSelection = ReadUserInput();
 
     Console.Clear();
     switch (menuSelection)
@@ -51,19 +51,10 @@ void ShowHighscores()
     {
         // Order highscores
         List<HighscoreEntry> ordered = highscores.OrderByDescending(t => t.Score).ThenBy(t => t.ElapsedTime).ToList();
-
-        // Print option 1
         for (int i = 0; i < highscores.Count; i++)
         {
-            //Console.WriteLine($"{(i + 1).ToString().PadLeft(2)}. {ordered[i].PlayerName.PadRight(20)} -- {ordered[i].Score.ToString().PadLeft(5)} ({ordered[i].SelectedDifficulty})");
             Console.WriteLine($"{(i + 1).ToString().PadLeft(2)}. {ordered[i]}");
         }
-
-        // Print option 2
-        /*foreach (var item in highscores.OrderByDescending(t => t.Item1))
-        {
-            Console.WriteLine($"{item.Score.ToString().PadLeft(5)} -- {item.PlayerName.PadRight(20)} ({item.gameDifficulty})");
-        }*/
     }
 
     Console.WriteLine("Press enter to continue.");
@@ -84,7 +75,7 @@ void ShowNewGameMenu()
         Console.WriteLine("5. Random");
         Console.WriteLine("0. Main Menu");
 
-        menuSelection = readUserInput();
+        menuSelection = ReadUserInput();
 
         Console.Clear();
         switch (menuSelection)
@@ -113,7 +104,7 @@ void ShowNewGameMenu()
     } while (menuSelection != 0);
 }
 
-GameDifficulty getGameDifficulty()
+GameDifficulty GetGameDifficulty()
 {
     // Game difficulties:
     Console.WriteLine("Select a difficulty:");
@@ -121,7 +112,7 @@ GameDifficulty getGameDifficulty()
     Console.WriteLine("2. Medium");
     Console.WriteLine("3. Hard");
 
-    int difficultySelection = readUserInput();
+    int difficultySelection = ReadUserInput();
     GameDifficulty selectedDifficulty = GameDifficulty.Easy;
 
     bool validOption = false;
@@ -152,7 +143,7 @@ GameDifficulty getGameDifficulty()
 }
 
 /** This function cannot return MathOperation.Random */
-MathOperation getMathOperation()
+MathOperation GetMathOperation()
 {
     int option = new Random().Next(1, 5);
     switch (option)
@@ -167,7 +158,7 @@ MathOperation getMathOperation()
 
 void StartGame(MathOperation gameOption)
 {
-    GameDifficulty gameDifficulty = getGameDifficulty();
+    GameDifficulty gameDifficulty = GetGameDifficulty();
     Console.Clear();
 
     int score = 0;
@@ -181,17 +172,16 @@ void StartGame(MathOperation gameOption)
     while (continueGame)
     {
         if (gameOption == MathOperation.Random)
-            mathOperation = getMathOperation();
+            mathOperation = GetMathOperation();
 
-
-        (int, int) terms = getOperationTerms(mathOperation, gameDifficulty);
+        (int, int) terms = GetOperationTerms(mathOperation, gameDifficulty);
 
         Console.WriteLine($"How much is {terms.Item1}{GetGameOperator(mathOperation)}{terms.Item2}?");
-        userResponse = readUserInput();
+        userResponse = ReadUserInput();
 
         correctResponse = ApplyMathOperation(mathOperation, terms.Item1, terms.Item2);
         if (correctResponse == userResponse)
-            score += calcScore(mathOperation, gameDifficulty);
+            score += CalcScore(mathOperation, gameDifficulty);
         else
         {
             Console.WriteLine($"The right answer was {correctResponse}");
@@ -210,7 +200,7 @@ void StartGame(MathOperation gameOption)
     highscores.Add(new HighscoreEntry(score, gameDifficulty, userName, delta));
 }
 
-(int, int) getOperationTerms(MathOperation mathOperation, GameDifficulty gameDifficulty)
+(int, int) GetOperationTerms(MathOperation mathOperation, GameDifficulty gameDifficulty)
 {
     Random rnd = new Random();
     int term1, term2;
@@ -237,7 +227,7 @@ void StartGame(MathOperation gameOption)
         return (term1, term2);
 }
 
-int readUserInput()
+int ReadUserInput()
 {
     string? readResult;
     bool parseSuccess = false;
@@ -255,7 +245,7 @@ int readUserInput()
     return userInput;
 }
 
-int calcScore(MathOperation mathOperation, GameDifficulty gameDifficulty)
+int CalcScore(MathOperation mathOperation, GameDifficulty gameDifficulty)
 {
     int operationScore = (int)mathOperation + 1;
     switch (gameDifficulty)
@@ -333,5 +323,4 @@ public struct HighscoreEntry
     public TimeSpan ElapsedTime { get; }
 
     public override string ToString() => $"{PlayerName.PadRight(20)} -- {Score.ToString().PadLeft(5)} ({SelectedDifficulty}) -- {ElapsedTime:mm':'ss}";
-    //public override string ToString() => $"{Score.ToString().PadLeft(5)} -- {PlayerName.PadRight(20)} ({SelectedDifficulty})";
 }
