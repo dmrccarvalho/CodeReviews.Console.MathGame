@@ -164,7 +164,6 @@ void StartGame(MathOperation gameOption)
     int score = 0;
     bool continueGame = true;
 
-    Random rnd = new Random();
     int userResponse, correctResponse;
     MathOperation mathOperation = gameOption;
 
